@@ -95,7 +95,7 @@ default:
     break;
 }
 archivo = fopen("user.txt", "w");
-fprintf(archivo, "%s\n%s\n", user, password);
+fprintf(archivo, "%s%s", user, password);
 fclose(archivo);
 
 login();
@@ -238,15 +238,15 @@ FILE* login;
 FILE* cuenta;
 char user[20];
 char password[20];
-char new_user[20];
+char new_user[20]={'\0'};
 char new_password[20];
 char confirm_password[20];
 char entrada[2];
-char resp;
+int resp;
 int nirvana=0;
 
 login = fopen("user.txt", "r");
- fscanf(login, "%s\n%s", user, password);
+ fscanf(login, "%s%s", user, password);
 fclose(login);
 
 do
@@ -257,21 +257,37 @@ do
     printf("\n3- Mostar usuario y clave");
     printf("\n4- Salir de configuracion\n");
 fflush(stdin);
-//scanf("%c",&resp);
-fgets(entrada, sizeof(entrada), stdin);
-resp=strtol(entrada, NULL, 10);
-fflush(stdin);
+scanf("%d",&resp);
+//fgets(entrada, sizeof(entrada), stdin);
+//resp=strtol(entrada, NULL, 10);
+//fflush(stdin);
 switch (resp)
 {
 case 1:
 printf("\n\nSu viejo usuario es: %s",user);
     printf("\nIngrese su nuevo usuario: ");
-    fflush(stdin);
+//    fflush(stdin);
+//PRUEBA###########################
+
+if (fgets(new_user, 20, stdin) != NULL) {
+        // Check if the last character is a newline
+        if (new_user[strlen(new_user) - 1] != '\n') {
+            printf("Warning: Input line may be truncated.\n");
+            // Consume remaining characters from the input buffer (optional)
+            while (fgetc(stdin) != '\n');  // Read and discard characters until newline
+        }
+  //      printf("You entered: %s", new_user);
+    } else {
+        printf("Error reading input.\n");
+    }
+
+//FIN PRUEBA###########################
     fgets(new_user, 20, stdin);
-    strcpy(user, new_user);
+//printf("XXXXXXXX:   %s",new_user);
+//    strcpy(user, new_user);
 
 cuenta = fopen("user.txt", "w");
-fprintf(cuenta, "%s\n%s\n", user, password);
+fprintf(cuenta, "%s%s", new_user, password);
 fclose(cuenta);
 printf("\nSe ha cambiado el usuario exitosamente!\n\n");
     break;
@@ -308,7 +324,7 @@ fgets(new_password, 20, stdin);
 }
 strcpy(password,new_password);
 cuenta = fopen("user.txt", "w");
-fprintf(cuenta, "%s\n%s\n", user, password);
+fprintf(cuenta, "%s%s", user, password);
 fclose(cuenta);
 printf("\nSe ha cambiado la clave exitosamente!\n\n");
     break;
@@ -422,7 +438,7 @@ printf("\nPeso: %.2fKg\nAltura : %.2fm",peso,altura);
 printf("\nTu BMI es de: %.2f",bmi);
 
 file_bmi = fopen("bmi.txt", "w");
-fprintf(file_bmi, "%f\n%f\n%f", peso, altura, bmi);
+fprintf(file_bmi, "%f%f%f", peso, altura, bmi);
 fclose(file_bmi);
 
 if (bmi<18.5)
